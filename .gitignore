@@ -1,3 +1,4 @@
 DATA/
 .idea/
 __pycache__/
+venv/
