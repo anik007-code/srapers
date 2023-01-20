@@ -120,17 +120,40 @@ class Linkedin:
             print(f" error on {e}")
 
     def people_link(self):
-        flag = True
-        while flag:
-            try:
+        try:
+            last_height = self.driver.execute_script("return document.body.scrollHeight")
+            while True:
+                self.people_link_list()
+                self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                time.sleep(0.5)
+                new_height = self.driver.execute_script("return document.body.scrollHeight")
+                if new_height == last_height:
+                    break
+                last_height = new_height
                 flag = True
-                btn = WebDriverWait(self.driver, self.miniwait).until(
-                        EC.presence_of_element_located(
-                            (By.XPATH,
-                             '//button[@aria-label="Next"]')))
-                btn.click()
-            except Exception as e:
-                flag = False
-                print(f" error- {e}")
+                while flag:
+                    try:
+                        flag = True
+                        btn = WebDriverWait(self.driver, self.miniwait).until(
+                            EC.presence_of_element_located(
+                                (By.XPATH,
+                                 '//div[@class="artdeco-pagination__page-state"]/following-sibling::button')))
+                        btn.click()
+                    except Exception as e:
+                        flag = False
+                        print(f" error- {e}")
+        except Exception as e:
+            print(f" error- {e}")
 
+    def people_link_list(self):
+        try:
+            elements = WebDriverWait(self.driver, self.miniwait).until(
+                EC.presence_of_all_elements_located(
+                    (By.XPATH,
+                     '//div[@class="mb1"]/div/div/span/span/a')))
+            for element in elements:
+                link = element.get_attribute('href')
+                print(link)
 
+        except Exception as e:
+            print(f" error on {e}")
