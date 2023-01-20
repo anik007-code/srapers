@@ -32,7 +32,7 @@ class DB:
         self.engine = create_engine(f"mysql+pymysql://{self.user_name}:{self.password}@{self.host_name}/{self.db_name}")
 
     def create_df(self):
-        file_name = f"{ROOT_PATH}/{DATA_PATH}/{INFO_PATH}/data.json"
+        file_name = f"{ROOT_PATH}/{DATA_PATH}/{INFO_PATH}/raw_data.json"
         with open(file_name, 'r') as file:
             data = json.load(file)
 
