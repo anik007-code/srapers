@@ -1,0 +1,5 @@
+DATABASE_NAME = 'company_data'
+USER_NAME = 'scraper'
+PASSWORD = '123'
+HOST_NAME = 'localhost'
+TABLE_NAME = 'company_data'

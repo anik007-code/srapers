@@ -3,6 +3,7 @@ import os
 SITE_LINK = "http://baira.org.bd/dir/all-member-list"
 ROOT_PATH = os.getcwd()
 DATA_PATH = "DATA"
+IMAGE_PATH = "IMAGE"
 DRIVER_PATH = "DRIVER"
 FILE_NAME = "raw_data.json"
 INFO_PATH = "INFO"

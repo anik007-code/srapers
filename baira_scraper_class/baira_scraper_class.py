@@ -8,8 +8,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from configs.config_data import WAIT, MINI_WAIT, ROOT_PATH, DATA_PATH, INFO_PATH, FILE_NAME, LINK_PATH, SITE_LINK
-from functions import make_dir
+from configs.config_data import WAIT, MINI_WAIT, ROOT_PATH, DATA_PATH, INFO_PATH, FILE_NAME, LINK_PATH, SITE_LINK, \
+    IMAGE_PATH
+from functions import make_dir, image_downloader
 
 
 class BairaScraper:
@@ -21,6 +22,7 @@ class BairaScraper:
         self.file = FILE_NAME
         self.info_path = f"{ROOT_PATH}/{DATA_PATH}/{INFO_PATH}"
         self.link_path = f"{ROOT_PATH}/{DATA_PATH}/{LINK_PATH}"
+        self.img_path = f"{ROOT_PATH}/{DATA_PATH}/{IMAGE_PATH}"
         self.time = str(date.today())
         self.item = []
         self.column_names = []
@@ -81,7 +83,7 @@ class BairaScraper:
             for element in elements:
                 link = element.get_attribute('href')
                 u_dict = {'company_link': link}
-                print(u_dict)
+                # print(u_dict)
                 links.append(u_dict)
                 [self.p_link.append(x) for x in links if x not in self.p_link]
             make_dir(f"{self.link_path}")
@@ -96,7 +98,7 @@ class BairaScraper:
             with open(file, 'r') as f:
                 data = json.loads(f.read())
                 for item in data:
-                    print(item)
+                    # print(item)
                     self.open_link_new_tab(item['company_link'])
                     self.extraxt_data(link=item['company_link'])
                     self.close_new_tab()
@@ -104,14 +106,21 @@ class BairaScraper:
     def extraxt_data(self, link):
         item = {}
         try:
-            item["company_name"] = self.driver.find_element(By.XPATH, '//strong[text()="Name of Agency"]').click()
+            item["company_name"] = self.driver.find_element(By.XPATH, '//tbody/tr/td[4]/strong').text
         except:
             item['company_name'] = "not found"
 
         try:
-            item['company_email'] = self.driver.find_element(By.XPATH, '//td[text()="Email"]')
+            item['contact_person'] = self.driver.find_element(By.XPATH, '//tbody/tr[3]/td/following-sibling::td'
+                                                                       '/following-sibling::td').text
         except:
-            item['company_email'] = "not found"
+            item['contact_person'] = "not found"
+
+        try:
+            elements = self.driver.find_element(By.XPATH, '//img[@class="img-responsive"]').get_attribute('src')
+            image_downloader(elements, item['company_name'].replace(" ", "_"), self.img_path)
+        except Exception as e:
+            print(f" error found in saving images {e}")
 
         item['source_url'] = link
         self.item.append(item)
