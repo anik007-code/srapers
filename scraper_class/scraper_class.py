@@ -39,6 +39,7 @@ class Linkedin:
         self.open_web_page(self.site_link)
         self.log_in()
         self.search_uni()
+        self.people_link()
 
     def open_web_page(self, link):
         self.driver.get(link)
@@ -111,10 +112,25 @@ class Linkedin:
             element = WebDriverWait(self.driver, self.miniwait).until(
                 EC.presence_of_element_located(
                     (By.XPATH,
-                     '//a[@id="ember1703"]')))
+                     '//span[@class="org-top-card-secondary-content__see-all t-normal t-black--light '
+                     'link-without-visited-state link-without-hover-state"]')))
             element.click()
             time.sleep(5)
         except Exception as e:
             print(f" error on {e}")
+
+    def people_link(self):
+        flag = True
+        while flag:
+            try:
+                flag = True
+                btn = WebDriverWait(self.driver, self.miniwait).until(
+                        EC.presence_of_element_located(
+                            (By.XPATH,
+                             '//button[@aria-label="Next"]')))
+                btn.click()
+            except Exception as e:
+                flag = False
+                print(f" error- {e}")
 
 
