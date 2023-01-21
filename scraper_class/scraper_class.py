@@ -10,7 +10,7 @@ from configs.config_credentials import USER_NAME, PASSWORD, UNIVERSITY
 from configs.config_data import WAIT, MINI_WAIT, ROOT_PATH, DATA_PATH, INFO_PATH, \
     LINK_PATH, FILE, LINKS, IMAGE_PATH
 import time
-from functions import make_dir
+from functions import make_dir, image_downloader
 
 
 class Linkedin:
@@ -32,6 +32,7 @@ class Linkedin:
         self.column_names = []
         self.df = pd.DataFrame()
         self.data_list = []
+        self.people = []
         self.company_link = []
         self.run_scraper()
 
@@ -40,6 +41,7 @@ class Linkedin:
         self.log_in()
         self.search_uni()
         self.people_link()
+        self.save_data()
 
     def open_web_page(self, link):
         self.driver.get(link)
@@ -121,15 +123,9 @@ class Linkedin:
 
     def people_link(self):
         try:
-            last_height = self.driver.execute_script("return document.body.scrollHeight")
             while True:
                 self.people_link_list()
                 self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                time.sleep(0.5)
-                new_height = self.driver.execute_script("return document.body.scrollHeight")
-                if new_height == last_height:
-                    break
-                last_height = new_height
                 flag = True
                 while flag:
                     try:
@@ -139,9 +135,9 @@ class Linkedin:
                                 (By.XPATH,
                                  '//div[@class="artdeco-pagination__page-state"]/following-sibling::button')))
                         btn.click()
-                    except Exception as e:
+                    except:
                         flag = False
-                        print(f" error- {e}")
+                        print(f"{flag}")
         except Exception as e:
             print(f" error- {e}")
 
@@ -153,7 +149,57 @@ class Linkedin:
                      '//div[@class="mb1"]/div/div/span/span/a')))
             for element in elements:
                 link = element.get_attribute('href')
-                print(link)
+                self.people.append(link)
+                self.open_link_new_tab(link)
+                self.extract_data(link)
+                self.close_new_tab()
 
         except Exception as e:
             print(f" error on {e}")
+
+    def extract_data(self, link):
+        item = {}
+        try:
+            element = WebDriverWait(self.driver, self.miniwait).until(
+                EC.presence_of_element_located(
+                    (By.XPATH,
+                     '//h1[@class="text-heading-xlarge inline t-24 v-align-middle break-words"]')))
+            item['name'] = element.text
+        except:
+            item['name'] = "not found"
+        try:
+            element = WebDriverWait(self.driver, self.miniwait).until(
+                EC.presence_of_element_located(
+                    (By.XPATH,
+                     '//div[@class="text-body-medium break-words"]')))
+            item['profession'] = element.text
+        except:
+            item['profession'] = "not found"
+
+        try:
+            element = WebDriverWait(self.driver, self.miniwait).until(
+                EC.presence_of_element_located(
+                    (By.XPATH,
+                     '//span[@class="t-black--light"]/span')))
+            item['total_connection'] = element.text
+        except:
+            item['total_connection'] = "not found"
+
+        try:
+            elements = self.driver.find_element(By.XPATH, '//img[@class="pv-top-card-profile-picture__image '
+                                                          'pv-top-card-profile-picture__image--show '
+                                                          'ember-view"]').get_attribute('src')
+            image_downloader(elements, item['name'], self.img_path)
+        except Exception as e:
+            print(f" error found in saving images {e}")
+
+        item['source_URL'] = link
+        item['source_name'] = "LinkedIn"
+
+        self.item.append(item)
+        print(item)
+
+    def save_data(self):
+        make_dir(f"{self.info_path}")
+        with open(f"{self.info_path}/{self.file}", 'w') as file:
+            json.dump(self.item, file, indent=4)
