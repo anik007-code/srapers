@@ -3,8 +3,9 @@ import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from configs.config_data import WAIT, MINI_WAIT, SITE_LINK, FILE, FILE_PATH, INFO_PATH, DATA_PATH, ROOT_PATH, LINK_PATH
-from functions import make_dir
+from configs.config_data import WAIT, MINI_WAIT, SITE_LINK, FILE, FILE_PATH, INFO_PATH, DATA_PATH, ROOT_PATH, LINK_PATH, \
+    IMAGE_PATH
+from functions import make_dir, image_downloader
 
 
 class Amazon:
@@ -15,6 +16,7 @@ class Amazon:
         self.driver = driver
         self.info_path = f"{ROOT_PATH}/{DATA_PATH}/{INFO_PATH}"
         self.link_path = f"{ROOT_PATH}/{DATA_PATH}/{LINK_PATH}"
+        self.img_path = f"{ROOT_PATH}/{DATA_PATH}/{IMAGE_PATH}"
         self.file = FILE
         self.data = FILE_PATH
         self.item = []
@@ -101,6 +103,12 @@ class Amazon:
             item["description"] = element.get_attribute('outerHTML')
         except:
             item["description"] = "not found"
+
+        try:
+            elements = self.driver.find_element(By.XPATH, '//span[@class="a-list-item"]/span/span/span/span/img').get_attribute('src')
+            image_downloader(elements, item['name'].replace(" ", "_"), self.img_path)
+        except Exception as e:
+            print(f" error found in saving images {e}")
 
         item["source_name"] = "AMAZON.COM"
         item["URL"] = link
