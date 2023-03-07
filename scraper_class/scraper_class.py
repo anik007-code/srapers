@@ -23,7 +23,7 @@ class Rokomari:
 
     def run_scraper(self):
         self.open_web_page()
-        self.get_category_link()
+        # self.get_category_link()
         self.extract_all_info()
 
     def open_link_new_tab(self, link):
@@ -131,6 +131,15 @@ class Rokomari:
     def extract_data(self, link):
         item = {}
         try:
+            WebDriverWait(self.driver, self.wait).until(
+                EC.presence_of_element_located(
+                    (By.XPATH,
+                     '//a[text()=" Specification "]'))
+            ).click()
+        except:
+            print("Specification not found")
+
+        try:
             item['books_name'] = WebDriverWait(self.driver, self.wait).until(
                 EC.presence_of_element_located(
                     (By.XPATH,
@@ -195,6 +204,6 @@ class Rokomari:
         item['source_url'] = link
         item['source_name'] = "ROKOMARI"
         self.item.append(item)
-        make_dir(f"{self.info_path}")
+        # make_dir(f"{self.info_path}")
         with open(f"{self.info_path}/data.json", 'w') as file:
             json.dump(self.item, file, indent=4)
