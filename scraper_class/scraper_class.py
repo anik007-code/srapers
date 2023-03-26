@@ -226,3 +226,6 @@ class Rokomari:
         # make_dir(f"{self.info_path}")
         with open(f"{self.info_path}/data.json", 'w') as file:
             json.dump(self.item, file, indent=4)
+
+
+
