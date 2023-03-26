@@ -1,8 +1,8 @@
 import time
+import schedule 
 from selenium import webdriver
 import chromedriver_autoinstaller
 from selenium.webdriver.chrome.options import Options
-
 from configs.config_data import ROOT_PATH, DATA_PATH, DRIVER_PATH, INFO_PATH
 from functions import make_dir
 from scraper_class.scraper_class import Rokomari
@@ -12,7 +12,7 @@ make_dir(f"{ROOT_PATH}/{DATA_PATH}")
 make_dir(driver_path)
 
 options = Options()
-options.headless = False
+options.headless = True
 
 chromedriver_autoinstaller.install(path=driver_path)
 driver = webdriver.Chrome(options=options)

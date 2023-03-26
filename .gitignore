@@ -3,3 +3,4 @@ DATA/
 __pycache__/
 test.py
 test_main.py
+venv/

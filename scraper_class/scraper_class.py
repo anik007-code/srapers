@@ -1,4 +1,6 @@
 import json
+import os
+import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -22,7 +24,7 @@ class Rokomari:
         self.run_scraper()
 
     def run_scraper(self):
-        self.open_web_page()
+        # self.open_web_page()
         # self.get_category_link()
         self.extract_all_info()
 
@@ -121,7 +123,11 @@ class Rokomari:
 
     def extract_all_info(self):
         try:
-            for book in self.product:
+            file = f"{self.link_path}/books_link.json"
+            if os.path.isfile(file):
+                with open(file, 'r') as f:
+                    data = json.loads(f.read())
+            for book in data:
                 self.open_link_new_tab(book)
                 self.extract_data(book)
                 self.close_new_tab()
@@ -130,14 +136,26 @@ class Rokomari:
 
     def extract_data(self, link):
         item = {}
+
         try:
-            WebDriverWait(self.driver, self.wait).until(
+            extract = WebDriverWait(self.driver, self.miniwait).until(
                 EC.presence_of_element_located(
                     (By.XPATH,
                      '//a[text()=" Specification "]'))
-            ).click()
+            )
+            self.driver.execute_script("arguments[0].click();", extract)
         except:
             print("Specification not found")
+        time.sleep(5)
+        try:
+            cross = WebDriverWait(self.driver, self.miniwait).until(
+                EC.presence_of_element_located(
+                    (By.XPATH,
+                     '//button[@id="js--notification-btn-close"]'))
+            )
+            self.driver.execute_script("arguments[0].click();", cross)
+        except:
+            print("cross not found")
 
         try:
             item['books_name'] = WebDriverWait(self.driver, self.wait).until(
@@ -204,6 +222,7 @@ class Rokomari:
         item['source_url'] = link
         item['source_name'] = "ROKOMARI"
         self.item.append(item)
+        print(item)
         # make_dir(f"{self.info_path}")
         with open(f"{self.info_path}/data.json", 'w') as file:
             json.dump(self.item, file, indent=4)
