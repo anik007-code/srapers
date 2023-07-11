@@ -1,0 +1,5 @@
+DATABASE_NAME = 'daad_data'
+USER_NAME = 'scraper'
+PASSWORD = '12345678'
+HOST_NAME = 'localhost'
+TABLE_NAME = 'daad_data'
