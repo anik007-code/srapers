@@ -15,11 +15,11 @@ class ShowtimePipeline:
         if title is not None:
             adapter['title'] = title.strip()
 
-        pub_date = adapter.get('date')
-        if pub_date is not None:
-            pub_date = pub_date.srip()
-            pub_date = pub_date.replace(':', '').strip()
-            adapter['pub_date'] = pub_date
+        # pub_date = adapter.get('date')
+        # if pub_date is not None:
+        #     pub_date = pub_date.srip()
+        #     pub_date = pub_date.replace(':', '').strip()
+        #     adapter['pub_date'] = pub_date
 
         views = adapter.get('views')
         if views is not None:
