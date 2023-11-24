@@ -1,0 +1,33 @@
+<!-- job_api/static/job_api/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Posting Viewer</title>
+    <style>
+        .profile-post {
+            background-color: #f0f0f0; /* Gray background color */
+            padding: 10px; /* Add some padding for better visibility */
+            margin-bottom: 10px; /* Add margin between profile posts */
+        }
+    </style>
+</head>
+<body class="hover-style">
+    <h1 style="text-align:center">Willkommen beim Profil-Posting-Viewer</h1>
+
+    {% if jobs_data %}
+        <ul>
+            {% for job_data in jobs_data %}
+                <li class="profile-post">
+                    <strong>Title:</strong> {{ job_data.Title }}<br>
+                    <strong>Description:</strong>{{ job_data.rawSummary | safe }}<br><br>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No job data available.</p>
+    {% endif %}
+</body>
+</html>
