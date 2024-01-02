@@ -17,7 +17,7 @@ NEWSPIDER_MODULE = "showtime.spiders"
 #USER_AGENT = "showtime (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -45,13 +45,13 @@ ROBOTSTXT_OBEY = True
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 SPIDER_MIDDLEWARES = {
-   "showtime.middlewares.ShowtimeSpiderMiddleware": 543,
+   # "showtime.middlewares.ShowtimeSpiderMiddleware": 543,
 }
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    "showtime.middlewares.ShowtimeDownloaderMiddleware": 543,
+   # "showtime.middlewares.ShowtimeDownloaderMiddleware": 543,
 #}
 
 # Enable or disable extensions
@@ -63,7 +63,7 @@ SPIDER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   "showtime.pipelines.ShowtimePipeline": 300,
+   # "showtime.pipelines.ShowtimePipeline": 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

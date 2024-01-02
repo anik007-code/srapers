@@ -11,4 +11,5 @@ class ShowtimeItem(scrapy.Item):
     title = scrapy.Field()
     views = scrapy.Field()
     pub_date = scrapy.Field()
+    data = scrapy.Field()
     pass
